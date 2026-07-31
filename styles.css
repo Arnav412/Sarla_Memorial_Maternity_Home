@@ -440,6 +440,7 @@ header {
 /* About Section */
 .about {
   background-color: var(--white);
+  padding: 6rem 0;
 }
 
 .about-grid {
@@ -971,6 +972,7 @@ header {
 /* Contact & Appointment Section */
 .contact {
   background-color: var(--white);
+  padding: 6rem 0;
 }
 
 .contact-grid {
