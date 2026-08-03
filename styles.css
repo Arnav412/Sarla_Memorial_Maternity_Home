@@ -978,8 +978,208 @@ header {
 .contact-grid {
   display: grid;
   grid-template-columns: 0.8fr 1.2fr;
-  gap: 4rem;
+  gap: 3rem;
+  align-items: stretch;
 }
+
+.contact-info-card, .appointment-form-container, .appointment-form {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Material Design Date Picker Modal Dialog styling */
+.material-datepicker-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(15, 23, 42, 0.6); /* Slate backdrop with transparency */
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  user-select: none;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.material-datepicker-content {
+  width: 328px;
+  background-color: var(--white);
+  border-radius: 16px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: scaleIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.material-datepicker-header {
+  background-color: var(--primary);
+  padding: 20px 24px;
+  color: var(--white);
+}
+
+.datepicker-header-subtitle {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  opacity: 0.8;
+  text-transform: uppercase;
+}
+
+.datepicker-header-title {
+  font-size: 30px;
+  font-weight: 500;
+  margin-top: 8px;
+  line-height: 1.25;
+  font-family: 'Outfit', sans-serif;
+}
+
+.material-datepicker-body {
+  padding: 16px;
+}
+
+.datepicker-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 8px;
+  margin-bottom: 12px;
+}
+
+.datepicker-current-month {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+
+.datepicker-nav-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.datepicker-nav-btn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--primary);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.datepicker-nav-btn:hover:not(:disabled) {
+  background-color: var(--primary-light);
+}
+
+.datepicker-nav-btn:disabled {
+  color: var(--gray-300);
+  cursor: not-allowed;
+}
+
+.datepicker-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  height: 24px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray-400);
+  margin-bottom: 4px;
+}
+
+.datepicker-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  row-gap: 2px;
+  column-gap: 2px;
+}
+
+.datepicker-day-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--gray-800);
+  position: relative;
+}
+
+.datepicker-day-cell:hover:not(.disabled):not(.selected) {
+  background-color: var(--primary-light);
+  color: var(--primary);
+}
+
+.datepicker-day-cell.selected {
+  background-color: var(--primary) !important;
+  color: var(--white) !important;
+  font-weight: 700;
+}
+
+.datepicker-day-cell.today:not(.selected) {
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.datepicker-day-cell.disabled {
+  color: var(--gray-300);
+  cursor: not-allowed;
+  background: none !important;
+}
+
+.material-datepicker-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 16px 16px 16px;
+  gap: 12px;
+}
+
+.datepicker-action-btn {
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.datepicker-action-btn:hover:not(:disabled) {
+  background-color: var(--primary-light);
+}
+
+.datepicker-action-btn:disabled {
+  color: var(--gray-300);
+  cursor: not-allowed;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+
 
 .contact-info-card {
   background-color: var(--light);
@@ -1029,7 +1229,7 @@ header {
   color: var(--primary);
 }
 
-.appointment-form {
+.appointment-form, .general-contact-form {
   background-color: var(--white);
   border-radius: var(--radius-lg);
   padding: 3rem;
@@ -1392,10 +1592,6 @@ footer {
   .interactive-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
-  .contact-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 768px) {
@@ -1439,6 +1635,10 @@ footer {
   }
   
   .doctors-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .contact-grid {
     grid-template-columns: 1fr;
   }
   

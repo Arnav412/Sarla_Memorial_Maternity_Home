@@ -1,4 +1,237 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // 0a. Name and Phone Validation Constraints
+    const ptName = document.getElementById('ptName');
+    const ptPhone = document.getElementById('ptPhone');
+
+    if (ptName) {
+        ptName.addEventListener('input', (e) => {
+            // Keep only alphabet characters and spaces
+            e.target.value = e.target.value.replace(/[^A-Za-z\s]/g, '');
+        });
+    }
+
+    if (ptPhone) {
+        ptPhone.addEventListener('input', (e) => {
+            // Keep only digits and limit to 10 characters
+            e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+        });
+    }
+
+    // 0b. Material Design Date Picker Modal Logic
+    const ptDateInput = document.getElementById('ptDateInput');
+    const ptDateHidden = document.getElementById('ptDate');
+    const datePickerModal = document.getElementById('materialDatePickerModal');
+    const datepickerHeaderTitle = document.getElementById('datepickerHeaderTitle');
+    const datepickerCurrentMonth = document.getElementById('datepickerCurrentMonth');
+    const datepickerPrevBtn = document.getElementById('datepickerPrevBtn');
+    const datepickerNextBtn = document.getElementById('datepickerNextBtn');
+    const datepickerDays = document.getElementById('datepickerDays');
+    const datepickerCancelBtn = document.getElementById('datepickerCancelBtn');
+    const datepickerOkBtn = document.getElementById('datepickerOkBtn');
+
+    if (ptDateInput && ptDateHidden && datePickerModal) {
+        const monthNames = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        const dayNamesShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+        // Calculate min date bounds
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+
+        // 1:00 PM local time cut-off
+        if (currentHour > 13 || (currentHour === 13 && currentMinute > 0)) {
+            now.setDate(now.getDate() + 1);
+        }
+
+        const minDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        
+        // Calculate max date bounds (exactly 2 months)
+        const maxDate = new Date(minDate);
+        maxDate.setMonth(maxDate.getMonth() + 2);
+
+        // State trackers
+        let activeMonth = minDate.getMonth();
+        let activeYear = minDate.getFullYear();
+        let selectedDate = null;
+        let pendingSelectedDate = null;
+
+        // Format dates helper
+        function formatDateYYYYMMDD(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        // Format date helper for the header (e.g. "Mon, Nov 17")
+        function formatHeaderDate(date) {
+            const dayName = dayNamesShort[date.getDay()];
+            const monthNameShort = monthNames[date.getMonth()].substring(0, 3);
+            const dayNum = date.getDate();
+            return `${dayName}, ${monthNameShort} ${dayNum}`;
+        }
+
+        // Render Calendar Days
+        function renderCalendar() {
+            // Set header month name
+            datepickerCurrentMonth.textContent = monthNames[activeMonth];
+
+            // Disable/enable Month navigation buttons
+            if (activeMonth === minDate.getMonth() && activeYear === minDate.getFullYear()) {
+                datepickerPrevBtn.disabled = true;
+            } else {
+                datepickerPrevBtn.disabled = false;
+            }
+
+            if (activeMonth === maxDate.getMonth() && activeYear === maxDate.getFullYear()) {
+                datepickerNextBtn.disabled = true;
+            } else {
+                datepickerNextBtn.disabled = false;
+            }
+
+            // Clear days grid
+            datepickerDays.innerHTML = '';
+
+            // Calculate starting weekday offset
+            const startDayIndex = new Date(activeYear, activeMonth, 1).getDay();
+
+            // Calculate number of days in the current month
+            const daysInMonth = new Date(activeYear, activeMonth + 1, 0).getDate();
+
+            // Render empty cells for padding
+            for (let i = 0; i < startDayIndex; i++) {
+                const emptyCell = document.createElement('div');
+                emptyCell.className = 'datepicker-day-cell disabled';
+                datepickerDays.appendChild(emptyCell);
+            }
+
+            // Render selectable days
+            for (let day = 1; day <= daysInMonth; day++) {
+                const cellDate = new Date(activeYear, activeMonth, day);
+                const cell = document.createElement('div');
+                cell.className = 'datepicker-day-cell';
+                cell.textContent = day;
+
+                // Validate boundaries
+                const isPastMin = cellDate < minDate;
+                const isPostMax = cellDate > maxDate;
+
+                if (isPastMin || isPostMax) {
+                    cell.classList.add('disabled');
+                } else {
+                    // Click listener for day cell
+                    cell.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        pendingSelectedDate = cellDate;
+                        datepickerHeaderTitle.textContent = formatHeaderDate(cellDate);
+                        datepickerOkBtn.disabled = false;
+                        renderCalendar();
+                    });
+                }
+
+                // Check today highlight
+                const isToday = cellDate.getDate() === now.getDate() && 
+                                cellDate.getMonth() === now.getMonth() && 
+                                cellDate.getFullYear() === now.getFullYear();
+                if (isToday) {
+                    cell.classList.add('today');
+                }
+
+                // Check selected day highlight
+                const checkTarget = pendingSelectedDate || selectedDate;
+                if (checkTarget && 
+                    cellDate.getDate() === checkTarget.getDate() && 
+                    cellDate.getMonth() === checkTarget.getMonth() && 
+                    cellDate.getFullYear() === checkTarget.getFullYear()) {
+                    cell.classList.add('selected');
+                }
+
+                datepickerDays.appendChild(cell);
+            }
+        }
+
+        // Open Modal
+        ptDateInput.addEventListener('click', (e) => {
+            e.stopPropagation();
+            datePickerModal.style.display = 'flex';
+            
+            pendingSelectedDate = selectedDate;
+            const targetDate = selectedDate || minDate;
+            activeMonth = targetDate.getMonth();
+            activeYear = targetDate.getFullYear();
+
+            if (pendingSelectedDate) {
+                datepickerHeaderTitle.textContent = formatHeaderDate(pendingSelectedDate);
+                datepickerOkBtn.disabled = false;
+            } else {
+                datepickerHeaderTitle.textContent = 'Select Date';
+                datepickerOkBtn.disabled = true;
+            }
+
+            renderCalendar();
+        });
+
+        // Prev Month navigation
+        datepickerPrevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (activeMonth === 0) {
+                activeMonth = 11;
+                activeYear--;
+            } else {
+                activeMonth--;
+            }
+            renderCalendar();
+        });
+
+        // Next Month navigation
+        datepickerNextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (activeMonth === 11) {
+                activeMonth = 0;
+                activeYear++;
+            } else {
+                activeMonth++;
+            }
+            renderCalendar();
+        });
+
+        // Cancel Selection
+        datepickerCancelBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            datePickerModal.style.display = 'none';
+            pendingSelectedDate = null;
+        });
+
+        // OK / Confirm Selection
+        datepickerOkBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (!pendingSelectedDate) return;
+
+            selectedDate = pendingSelectedDate;
+            ptDateHidden.value = formatDateYYYYMMDD(selectedDate);
+            
+            const options = { weekday: 'long', month: 'long', day: 'numeric' };
+            const ptDateText = document.getElementById('ptDateText');
+            if (ptDateText) {
+                ptDateText.textContent = selectedDate.toLocaleDateString('en-US', options);
+                ptDateInput.style.color = 'var(--dark)';
+            }
+
+            datePickerModal.style.display = 'none';
+        });
+
+        // Close when clicking modal backdrop
+        datePickerModal.addEventListener('click', (e) => {
+            if (e.target === datePickerModal) {
+                datePickerModal.style.display = 'none';
+                pendingSelectedDate = null;
+            }
+        });
+    }
+
     // 1. Floating Contact Widget Interactivity
     const floatingContact = document.querySelector('.floating-contact');
     const floatingTrigger = document.querySelector('.floating-trigger');

@@ -6,7 +6,7 @@
   <title>Sarla Memorial Maternity Home | Gynecology, Obstetrics & Multi-Specialty Care | R.S. Pura, Jammu</title>
   <meta name="description" content="Established by Sarla Memorial Charitable Trust in memory of Smt. Sarla Gupta. Expert gynecological and obstetric care in R.S. Pura, Jammu. Motto: We Care, God Cures. Registered Reg No. J/NHCE/2012-13/519.">
   <meta name="keywords" content="maternity home, hospital, R.S. Pura, Jammu, gynecologist, pediatric, cancer opd, ear nose throat, free medicine, Sarla Memorial, Shanti Swaroop, Rajnesh Kumar">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=2">
 </head>
 <body>
 
@@ -23,7 +23,6 @@
           <li><a href="#procedures">Procedures</a></li>
           <li><a href="#doctors">Core Doctors</a></li>
           <li><a href="#special-clinics">Special Clinics</a></li>
-          <li><a href="#contact">Contact Us</a></li>
         </ul>
       </nav>
       <div class="nav-cta">
@@ -431,6 +430,16 @@
             </p>
           </div>
         </div>
+
+        <div class="contact-item">
+          <div class="contact-item-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          </div>
+          <div class="contact-item-text">
+            <h4>Email Address</h4>
+            <p><a href="mailto:sarlamemorialmaternityhome99@gmail.com" class="number-val" style="word-break: keep-all; white-space: nowrap; font-size: 0.85rem;">sarlamemorialmaternityhome99@gmail.com</a></p>
+          </div>
+        </div>
       </div>
 
       <div class="appointment-form-container">
@@ -456,8 +465,12 @@
               </select>
             </div>
             <div class="form-group">
-              <label for="ptDate">Appointment Date *</label>
-              <input type="date" id="ptDate" name="Preferred Date" required>
+              <label>Appointment Date *</label>
+              <button type="button" id="ptDateInput" style="text-align: left; background-color: var(--white); cursor: pointer; border: 1px solid var(--gray-400); border-radius: var(--radius-md); padding: 0.75rem 1rem; font-family: var(--font-body); font-size: 0.95rem; color: var(--gray-500); width: 100%; display: flex; justify-content: space-between; align-items: center;">
+                <span id="ptDateText">Select Date</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--gray-500);"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              </button>
+              <input type="hidden" id="ptDate" name="Preferred Date" required>
             </div>
             <div class="form-group form-group-full">
               <label for="ptMessage">Special Notes (Optional)</label>
@@ -524,7 +537,7 @@
     <div class="floating-menu">
       <div class="floating-menu-header">
         <h4>Sarla Memorial Maternity Home</h4>
-        <p>Click Call icon or Copy icon to use number</p>
+        <p>Click Call, Mail, or Copy icon to use</p>
       </div>
       <div class="floating-number-list">
         <!-- Contact Item 1 -->
@@ -563,10 +576,57 @@
             </button>
           </div>
         </div>
+        <!-- Contact Item 4 (Email) -->
+        <div class="floating-number-item">
+          <span class="number-val" style="font-size: 0.825rem; font-weight: 600; overflow-wrap: anywhere; word-break: break-all;">sarlamemorialmaternityhome99@gmail.com</span>
+          <div class="number-action" style="margin-left: 0.5rem;">
+            <a href="mailto:sarlamemorialmaternityhome99@gmail.com" class="num-btn num-btn-call" title="Email Us" style="background-color: var(--secondary);">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            </a>
+            <button class="num-btn num-btn-copy" title="Copy Email">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 
-  <script src="script.js"></script>
+  <!-- Material Design Date Picker Modal -->
+  <div class="material-datepicker-modal" id="materialDatePickerModal" style="display: none;">
+    <div class="material-datepicker-content">
+      <!-- Header Section -->
+      <div class="material-datepicker-header">
+        <span class="datepicker-header-subtitle">SELECT DATE</span>
+        <h3 class="datepicker-header-title" id="datepickerHeaderTitle">Select Date</h3>
+      </div>
+      <!-- Body Section -->
+      <div class="material-datepicker-body">
+        <!-- Month Navigation -->
+        <div class="datepicker-nav">
+          <span class="datepicker-current-month" id="datepickerCurrentMonth">August</span>
+          <div class="datepicker-nav-btns">
+            <button type="button" class="datepicker-nav-btn" id="datepickerPrevBtn" aria-label="Previous Month">&lt;</button>
+            <button type="button" class="datepicker-nav-btn" id="datepickerNextBtn" aria-label="Next Month">&gt;</button>
+          </div>
+        </div>
+        <!-- Weekdays Header -->
+        <div class="datepicker-weekdays">
+          <div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+        </div>
+        <!-- Days Grid -->
+        <div class="datepicker-days" id="datepickerDays">
+          <!-- Rendered dynamically by JavaScript -->
+        </div>
+      </div>
+      <!-- Footer Actions -->
+      <div class="material-datepicker-footer">
+        <button type="button" class="datepicker-action-btn" id="datepickerCancelBtn">CANCEL</button>
+        <button type="button" class="datepicker-action-btn" id="datepickerOkBtn" disabled>OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js?v=2"></script>
 </body>
 </html>
