@@ -44,6 +44,8 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -1007,6 +1009,7 @@ header {
 
 .material-datepicker-content {
   width: 328px;
+  max-width: 92vw;
   background-color: var(--white);
   border-radius: 16px;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
@@ -1014,6 +1017,12 @@ header {
   display: flex;
   flex-direction: column;
   animation: scaleIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.responsive-email-link {
+  word-break: keep-all;
+  white-space: nowrap;
+  font-size: 0.85rem;
 }
 
 .material-datepicker-header {
@@ -1642,8 +1651,18 @@ footer {
     grid-template-columns: 1fr;
   }
   
+  .contact-info-card {
+    padding: 2rem 1.5rem;
+  }
+  
+  .responsive-email-link {
+    white-space: normal;
+    word-break: break-all;
+    font-size: 0.8rem;
+  }
+  
   .camp-block {
-    padding: 1.5rem;
+    padding: 1.25rem 1rem;
   }
   
   .interactive-grid {
@@ -1655,7 +1674,7 @@ footer {
   }
   
   .ent-doctor-card {
-    padding: 2rem 1.5rem;
+    padding: 1.5rem 1.25rem;
   }
   
   .form-grid {
