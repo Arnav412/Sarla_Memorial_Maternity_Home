@@ -729,105 +729,443 @@ header {
   perspective: 1500px;
 }
 
+.camp-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.camp-slogan {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.camp-brand-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.camp-brand-logo .brand-text {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.55rem;
+  font-weight: 800;
+  color: #64748b;
+  line-height: 1.15;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
 /* Panel Card Flipping Architecture */
 .panel-card {
   height: 240px;
   position: relative;
   cursor: pointer;
+  perspective: 1000px;
 }
 
 .panel-card .flashcard {
   width: 100%;
   height: 100%;
-  position: absolute;
+  position: relative;
   transform-style: preserve-3d;
-  transition: transform var(--transition-slow);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--gray-200);
+  transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
 
 .panel-card:hover .flashcard,
 .panel-card.flipped .flashcard {
   transform: rotateY(180deg);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
 .panel-card .card-face {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  border-radius: var(--radius-md);
-  padding: 1.5rem;
+  -webkit-backface-visibility: hidden;
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: space-between;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .panel-card .card-front {
-  z-index: 2;
   transform: rotateY(0deg);
 }
 
-.panel-card .card-back {
+.panel-card .card-front > * {
+  position: relative;
+  z-index: 2;
+}
+
+.panel-card .card-front::after {
+  content: '';
+  position: absolute;
+  right: -25px;
+  bottom: -25px;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.panel-card .card-svg-bg {
+  position: absolute;
+  right: 5px;
+  bottom: 0px;
+  width: 130px;
+  height: 130px;
+  pointer-events: none;
   z-index: 1;
+}
+
+.panel-card .card-back {
   transform: rotateY(180deg);
   background-color: var(--white);
   color: var(--dark);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Updated Pastel Flash Card Schemes (Matching Reference Image 2) */
+
+/* Card 1: Surgical Oncology (Yellow) */
+.card-yellow .card-front {
+  background: linear-gradient(135deg, #FFFDF0 0%, #FFF3D6 100%);
+  border: 1px solid rgba(202, 138, 4, 0.2);
+}
+.card-yellow .card-front::after {
+  background: radial-gradient(circle, #FDE68A 0%, rgba(254, 240, 138, 0.5) 70%, transparent 100%);
+}
+.card-yellow .card-front h4 { color: #1e293b; }
+.card-yellow .card-qual { color: #64748b; }
+.card-yellow .card-org { color: #A16207; font-weight: 600; }
+.card-yellow .card-badge { background-color: #B8860B; color: #ffffff; }
+.card-yellow .card-flip-action { color: #B8860B; }
+.card-yellow .card-back { border: 2px solid #B8860B; background-color: #FFFDF7; }
+
+/* Card 2: Head & Neck Surgery (Ice Blue) */
+.card-gray .card-front {
+  background: linear-gradient(135deg, #F0F7FF 0%, #E0F2FE 100%);
+  border: 1px solid rgba(44, 82, 130, 0.2);
+}
+.card-gray .card-front::after {
+  background: radial-gradient(circle, #BAE6FD 0%, rgba(186, 230, 253, 0.5) 70%, transparent 100%);
+}
+.card-gray .card-front h4 { color: #1e293b; }
+.card-gray .card-qual { color: #64748b; }
+.card-gray .card-org { color: #2C5282; font-weight: 600; }
+.card-gray .card-badge { background-color: #355C7D; color: #ffffff; }
+.card-gray .card-flip-action { color: #2B6CB0; }
+.card-gray .card-back { border: 2px solid #355C7D; background-color: #F8FAFC; }
+
+/* Card 3: Cancer Surgeon (Pink) */
+.card-pink .card-front {
+  background: linear-gradient(135deg, #FFF5F8 0%, #FCE4EC 100%);
+  border: 1px solid rgba(216, 27, 96, 0.2);
+}
+.card-pink .card-front::after {
+  background: radial-gradient(circle, #FBCFE8 0%, rgba(251, 207, 232, 0.5) 70%, transparent 100%);
+}
+.card-pink .card-front h4 { color: #1e293b; }
+.card-pink .card-qual { color: #64748b; }
+.card-pink .card-org { color: #C2185B; font-weight: 600; }
+.card-pink .card-badge { background-color: #D81B60; color: #ffffff; }
+.card-pink .card-flip-action { color: #D81B60; }
+.card-pink .card-back { border: 2px solid #D81B60; background-color: #FFF5F8; }
+
+/* Card 4: ENT Oncology (Mint Cyan / Teal) */
+.card-blue .card-front {
+  background: linear-gradient(135deg, #F0FDF9 0%, #E0F2F1 100%);
+  border: 1px solid rgba(0, 121, 107, 0.2);
+}
+.card-blue .card-front::after {
+  background: radial-gradient(circle, #99F6E4 0%, rgba(153, 246, 228, 0.5) 70%, transparent 100%);
+}
+.card-blue .card-front h4 { color: #1e293b; }
+.card-blue .card-qual { color: #64748b; }
+.card-blue .card-org { color: #00695C; font-weight: 600; }
+.card-blue .card-badge { background-color: #00796B; color: #ffffff; }
+.card-blue .card-flip-action { color: #00796B; }
+.card-blue .card-back { border: 2px solid #00796B; background-color: #F0FDF9; }
+
+/* Card 5: Medical Oncology (Sage Green) */
+.card-green .card-front {
+  background: linear-gradient(135deg, #F0FDF4 0%, #E8F5E9 100%);
+  border: 1px solid rgba(46, 125, 50, 0.2);
+}
+.card-green .card-front::after {
+  background: radial-gradient(circle, #BBF7D0 0%, rgba(187, 247, 208, 0.5) 70%, transparent 100%);
+}
+.card-green .card-front h4 { color: #1e293b; }
+.card-green .card-qual { color: #64748b; }
+.card-green .card-org { color: #1E5622; font-weight: 600; }
+.card-green .card-badge { background-color: #2E7D32; color: #ffffff; }
+.card-green .card-flip-action { color: #2E7D32; }
+.card-green .card-back { border: 2px solid #2E7D32; background-color: #F0FDF4; }
+
+/* Card 6: OPD Schedule (Blush Red / White) */
+.card-white-red .card-front {
+  background: linear-gradient(135deg, #FFF5F5 0%, #FFEBEE 100%);
+  border: 1px solid rgba(198, 40, 40, 0.2);
+}
+.card-white-red .card-front::after {
+  background: radial-gradient(circle, #FECACA 0%, rgba(254, 202, 202, 0.5) 70%, transparent 100%);
+}
+.card-white-red .card-front h4 { color: #1e293b; }
+.card-white-red .card-qual { color: #64748b; }
+.card-white-red .card-org { color: #C62828; font-weight: 600; }
+.card-white-red .card-badge { background-color: #C62828; color: #ffffff; }
+.card-white-red .card-flip-action { color: #C62828; }
+.card-white-red .card-back { border: 2px solid #C62828; background-color: #FFF5F5; }
+
+/* ENT Section Redesign Styles (Matching Reference Image 3) */
+.ent-section-container {
+  background-color: var(--white);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--gray-200);
+}
+
+.ent-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  min-height: 520px;
+}
+
+@media (max-width: 992px) {
+  .ent-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Left Navy Panel */
+.ent-info-panel {
+  background: linear-gradient(145deg, #0b2d5c 0%, #071c3b 100%);
+  color: #ffffff;
+  padding: 2.5rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.ent-panel-bg-shapes {
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.ent-badge {
+  display: inline-block;
+  align-self: flex-start;
+  background-color: #f59e0b;
+  color: #0f172a;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.25rem;
+}
+
+.ent-doc-name {
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.25rem;
+  line-height: 1.2;
+}
+
+.ent-doc-qual {
+  font-size: 1.05rem;
+  color: #cbd5e1;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.ent-doc-spec {
+  font-size: 0.95rem;
+  color: #94a3b8;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+}
+
+.ent-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.12);
+  margin-bottom: 1.5rem;
+}
+
+.ent-details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.ent-detail-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.ent-detail-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #60a5fa;
+  flex-shrink: 0;
+}
+
+.ent-detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.ent-detail-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ent-detail-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.35;
+}
+
+/* Right Showcase Panel */
+.ent-showcase-panel {
+  background-color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+
+.ent-doctor-portrait-box {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  overflow: hidden;
+}
+
+.ent-doctor-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+}
+
+.ent-quote-box {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  padding: 1.1rem 1.5rem;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  max-width: 220px;
+}
+
+.ent-quote-mark {
+  font-size: 2.8rem;
+  font-family: Georgia, serif;
+  color: #60a5fa;
+  line-height: 0.7;
+  display: block;
+  margin-bottom: 0.2rem;
+}
+
+.ent-quote-text {
+  font-size: 1.1rem;
+  font-style: italic;
+  font-family: Georgia, serif;
+  color: #1e3a8a;
+  line-height: 1.3;
+  font-weight: 600;
+}
+
+.ent-quote-accent {
+  width: 35px;
+  height: 3px;
+  background-color: #3b82f6;
+  margin-top: 0.5rem;
+  border-radius: 2px;
+}
+
+/* Bottom Care Grid */
+.ent-care-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background-color: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  padding: 1.5rem 1rem;
+  gap: 0.75rem;
+}
+
+.ent-care-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0.5rem 0.25rem;
+}
+
+.ent-care-icon {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
   justify-content: center;
 }
 
-/* Color Classes matching the original oncology banners */
-
-.card-yellow .card-front {
-  background: linear-gradient(135deg, #fef08a 0%, #fde047 100%);
-  color: #854d0e;
+.ent-care-title {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #0d9488;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.2rem;
 }
-.card-yellow .card-front h4 { color: #713f12; }
-.card-yellow .card-badge { background-color: #ca8a04; color: var(--white); }
-.card-yellow.card-back { border: 2px solid #ca8a04; }
 
-.card-gray .card-front {
-  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
-  color: #334155;
+.ent-care-desc {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
 }
-.card-gray .card-front h4 { color: #0f172a; }
-.card-gray .card-badge { background-color: #475569; color: var(--white); }
-.card-gray.card-back { border: 2px solid #475569; }
-
-.card-pink .card-front {
-  background: linear-gradient(135deg, #fbcfe8 0%, #f9a8d4 100%);
-  color: #9d174d;
-}
-.card-pink .card-front h4 { color: #831843; }
-.card-pink .card-badge { background-color: #db2777; color: var(--white); }
-.card-pink.card-back { border: 2px solid #db2777; }
-
-.card-blue .card-front {
-  background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 100%);
-  color: var(--white);
-}
-.card-blue .card-front h4 { color: var(--white); }
-.card-blue .card-badge { background-color: #0369a1; color: var(--white); }
-.card-blue.card-back { border: 2px solid #0284c7; }
-
-.card-green .card-front {
-  background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
-  color: #14532d;
-}
-.card-green .card-front h4 { color: #14532d; }
-.card-green .card-badge { background-color: #15803d; color: var(--white); }
-.card-green.card-back { border: 2px solid #16a34a; }
-
-.card-white-red .card-front {
-  background-color: var(--white);
-  border: 2px solid #ef4444;
-  color: #b91c1c;
-}
-.card-white-red .card-front h4 { color: #b91c1c; }
-.card-white-red .card-badge { background-color: #dc2626; color: var(--white); }
-.card-white-red.card-back { border: 2px solid #ef4444; }
 
 /* Card Element Styles */
 .panel-card .card-badge {
