@@ -1079,15 +1079,18 @@ header {
 .ent-doctor-portrait-box {
   position: relative;
   width: 100%;
-  height: 380px;
+  height: 420px;
   overflow: hidden;
+  background-color: #f1f5f9;
 }
 
 .ent-doctor-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 20%;
+  object-position: center 10%;
+  image-rendering: -webkit-optimize-contrast;
+  filter: contrast(1.02) brightness(1.02);
 }
 
 .ent-quote-box {
@@ -1610,6 +1613,9 @@ header {
 .form-group input,
 .form-group select,
 .form-group textarea {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: 0.75rem 1rem;
   border: 1px solid var(--gray-400);
   border-radius: var(--radius-md);
@@ -1618,6 +1624,10 @@ header {
   outline: none;
   transition: var(--transition-fast);
   background-color: var(--light);
+}
+
+.form-group select {
+  text-overflow: ellipsis;
 }
 
 .form-group input:focus,
@@ -1987,15 +1997,24 @@ footer {
   
   .contact-grid {
     grid-template-columns: 1fr;
+    gap: 2rem;
+    max-width: 640px;
+    margin: 0 auto;
+    width: 100%;
   }
   
-  .contact-info-card {
+  .contact-info-card,
+  .appointment-form,
+  .general-contact-form {
     padding: 2rem 1.5rem;
+    width: 100%;
+    box-sizing: border-box;
   }
   
   .responsive-email-link {
     white-space: normal;
-    word-break: break-all;
+    overflow-wrap: anywhere;
+    word-break: break-word;
     font-size: 0.8rem;
   }
   
@@ -2017,6 +2036,7 @@ footer {
   
   .form-grid {
     grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
   
   .form-group-full {
@@ -2037,5 +2057,84 @@ footer {
   .floating-contact {
     bottom: 20px;
     left: 20px;
+  }
+}
+
+/* Mobile Small Devices (max-width: 480px) */
+@media (max-width: 480px) {
+  .container {
+    padding: 0 1rem;
+  }
+
+  .contact {
+    padding: 3rem 0;
+  }
+
+  .contact-grid {
+    gap: 1.5rem;
+  }
+
+  .contact-info-card,
+  .appointment-form,
+  .general-contact-form {
+    padding: 1.5rem 1rem;
+    border-radius: var(--radius-md);
+  }
+
+  .contact-info-card h3,
+  .appointment-form h3 {
+    text-align: center;
+    font-size: 1.35rem !important;
+  }
+
+  .contact-item {
+    gap: 0.75rem;
+  }
+
+  .contact-item-icon {
+    width: 38px;
+    height: 38px;
+    font-size: 1.1rem;
+  }
+
+  .contact-item-text p,
+  .contact-item-text a {
+    font-size: 0.875rem;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .responsive-email-link {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    font-size: 0.8rem;
+  }
+
+  #ptDateInput {
+    padding: 0.75rem 0.75rem;
+    font-size: 0.875rem;
+  }
+
+  .appointment-form button[type="submit"] {
+    padding: 0.85rem 1rem;
+    font-size: 0.95rem;
+  }
+
+  .floating-contact {
+    bottom: 15px;
+    left: 15px;
+  }
+
+  .floating-trigger {
+    width: 52px;
+    height: 52px;
+    font-size: 1.25rem;
+  }
+
+  .floating-menu {
+    min-width: unset;
+    width: calc(100vw - 30px);
+    max-width: 310px;
   }
 }
