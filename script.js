@@ -290,46 +290,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         });
-    });    // 3. Dynamic Flashcards Toggle (Instant 0ms Touch Response)
+    });    // 3. Dynamic Flashcards Toggle (Clean Touch & Click Handler - Zero Lag)
     const flashcards = document.querySelectorAll('.panel-card');
     flashcards.forEach(card => {
-        let touchStartX = 0;
-        let touchStartY = 0;
-        let isTouchTap = false;
-
-        card.addEventListener('touchstart', (e) => {
-            if (e.touches.length > 1) return;
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-            isTouchTap = false;
-        }, { passive: true });
+        let touchHandled = false;
 
         card.addEventListener('touchend', (e) => {
             if (e.target.closest('a')) return;
-            if (!e.changedTouches || e.changedTouches.length === 0) return;
-            
-            const deltaX = Math.abs(e.changedTouches[0].clientX - touchStartX);
-            const deltaY = Math.abs(e.changedTouches[0].clientY - touchStartY);
-
-            // Trigger flip only if touch was a tap (finger moved < 10px, not a scroll swipe)
-            if (deltaX < 10 && deltaY < 10) {
-                isTouchTap = true;
-                requestAnimationFrame(() => {
-                    card.classList.toggle('flipped');
-                });
-            }
-        }, { passive: true });
+            touchHandled = true;
+            card.classList.toggle('flipped');
+            setTimeout(() => { touchHandled = false; }, 400);
+        });
 
         card.addEventListener('click', (e) => {
             if (e.target.closest('a')) return;
-            // Avoid duplicate toggle if touchend already handled the tap
-            if (isTouchTap) {
-                isTouchTap = false;
-                return;
-            }
-            requestAnimationFrame(() => {
-                card.classList.toggle('flipped');
-            });
+            if (touchHandled) return;
+            card.classList.toggle('flipped');
         });
     });
 
@@ -365,13 +341,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (dateElem) dateElem.value = todayFormatted;
             }
             
-            // Set Loading Feedback on Submit Button
+            // Set Loading Feedback on Submit Button with auto-reset safety
             const submitBtn = form.querySelector('button[type="submit"]');
             if (submitBtn) {
+                const origText = submitBtn.textContent;
                 submitBtn.textContent = 'Submitting Request...';
                 submitBtn.style.opacity = '0.75';
+                setTimeout(() => {
+                    submitBtn.textContent = origText;
+                    submitBtn.style.opacity = '1';
+                }, 4000);
             }
-            // Form posts directly to FormSubmit endpoint with zero fetch hanging!
         });
     }
 
