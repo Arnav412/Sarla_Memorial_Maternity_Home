@@ -459,12 +459,14 @@
         </div>
       </div>
 
+      <!-- Hidden Iframe Target (Prevents Page Redirection & Mobile Hangs) -->
+      <iframe name="formsubmit_target_iframe" id="formsubmit_target_iframe" style="display:none; width:0; height:0; border:0;"></iframe>
+
       <div class="appointment-form-container">
-        <form class="appointment-form" action="https://formsubmit.co/sarlamemorialmaternityhome@gmail.com" method="POST">
+        <form class="appointment-form" action="https://formsubmit.co/sarlamemorialmaternityhome@gmail.com" method="POST" target="formsubmit_target_iframe">
           <input type="hidden" name="_subject" value="New Patient Appointment Request - Sarla Memorial Maternity Home">
           <input type="hidden" name="_captcha" value="false">
           <input type="hidden" name="_template" value="table">
-          <input type="hidden" name="_next" value="https://sarla-memorial-maternity-home-1.onrender.com/#contact">
           <h3 style="margin-bottom: 1.5rem; font-size: 1.5rem; color: var(--primary-dark);">Request Appointment</h3>
           <div class="form-grid">
             <div class="form-group">
@@ -630,6 +632,30 @@
       <div class="material-datepicker-footer">
         <button type="button" class="datepicker-action-btn" id="datepickerCancelBtn">CANCEL</button>
         <button type="button" class="datepicker-action-btn" id="datepickerOkBtn" disabled>OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Appointment Request Success Modal -->
+  <div class="appointment-success-modal" id="appointmentSuccessModal" style="display: none;">
+    <div class="appointment-success-card">
+      <div class="success-icon-circle">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <h3>Appointment Requested!</h3>
+      <p class="success-sub">Thank you for booking with Sarla Memorial Maternity Home.</p>
+      
+      <div class="success-details-box">
+        <div class="detail-row"><span>Patient:</span> <strong id="succName">-</strong></div>
+        <div class="detail-row"><span>Phone:</span> <strong id="succPhone">-</strong></div>
+        <div class="detail-row"><span>Specialist:</span> <strong id="succDoc">-</strong></div>
+        <div class="detail-row"><span>Date:</span> <strong id="succDate">-</strong></div>
+      </div>
+
+      <p class="success-note">We have received your request and sent it to our medical reception. Our team will contact you shortly to confirm your visit.</p>
+
+      <div class="success-actions">
+        <button type="button" class="btn btn-primary" id="closeSuccessModalBtn" style="width: 100%;">Done</button>
       </div>
     </div>
   </div>

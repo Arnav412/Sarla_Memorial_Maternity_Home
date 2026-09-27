@@ -309,17 +309,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 4. Form Submission & Client-Side Validation (Native FormSubmit - 100% Mobile Bulletproof)
+    // 4. Form Submission & Client-Side Validation (Native FormSubmit with Success Modal)
     const form = document.querySelector('.appointment-form');
+    const successModal = document.getElementById('appointmentSuccessModal');
+    const closeSuccessBtn = document.getElementById('closeSuccessModalBtn');
+
+    if (closeSuccessBtn && successModal) {
+        closeSuccessBtn.addEventListener('click', () => {
+            successModal.style.display = 'none';
+        });
+        successModal.addEventListener('click', (e) => {
+            if (e.target === successModal) {
+                successModal.style.display = 'none';
+            }
+        });
+    }
+
     if (form) {
         form.addEventListener('submit', (e) => {
             const nameElem = document.getElementById('ptName');
             const phoneElem = document.getElementById('ptPhone');
+            const docElem = document.getElementById('ptDoc');
             const dateElem = document.getElementById('ptDate');
+            const ptDateText = document.getElementById('ptDateText');
 
             const name = nameElem ? nameElem.value.trim() : '';
             const phone = phoneElem ? phoneElem.value.trim() : '';
-            let date = dateElem ? dateElem.value.trim() : '';
+            const doc = docElem ? docElem.value : '';
+            let dateVal = dateElem ? dateElem.value.trim() : '';
 
             if (!name) {
                 e.preventDefault();
@@ -336,11 +353,28 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Ensure date is never empty
-            if (!date) {
+            if (!dateVal) {
                 const todayFormatted = new Date().toISOString().split('T')[0];
+                dateVal = todayFormatted;
                 if (dateElem) dateElem.value = todayFormatted;
             }
-            
+
+            // Populate Success Modal details
+            const succName = document.getElementById('succName');
+            const succPhone = document.getElementById('succPhone');
+            const succDoc = document.getElementById('succDoc');
+            const succDate = document.getElementById('succDate');
+
+            if (succName) succName.textContent = name;
+            if (succPhone) succPhone.textContent = phone;
+            if (succDoc) succDoc.textContent = doc;
+            if (succDate) succDate.textContent = ptDateText ? ptDateText.textContent : dateVal;
+
+            // Display Success Modal immediately (Instant feedback for patient)
+            if (successModal) {
+                successModal.style.display = 'flex';
+            }
+
             // Set Loading Feedback on Submit Button with auto-reset safety
             const submitBtn = form.querySelector('button[type="submit"]');
             if (submitBtn) {
@@ -350,8 +384,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 setTimeout(() => {
                     submitBtn.textContent = origText;
                     submitBtn.style.opacity = '1';
-                }, 4000);
+                }, 3000);
             }
+
+            // Form submits via iframe target without page redirection or mobile hanging!
         });
     }
 
