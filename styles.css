@@ -772,6 +772,7 @@ header {
   -webkit-tap-highlight-color: transparent;
   user-select: none;
   -webkit-user-select: none;
+  will-change: transform;
 }
 
 .panel-card .flashcard {
@@ -780,10 +781,11 @@ header {
   position: relative;
   transform-style: preserve-3d;
   -webkit-transform-style: preserve-3d;
-  transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
-  -webkit-transition: -webkit-transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+  transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+  -webkit-transition: -webkit-transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
   border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+  will-change: transform;
 }
 
 /* Hover flip applies only on devices with fine pointer (mouse/trackpad) */
@@ -791,7 +793,6 @@ header {
   .panel-card:hover .flashcard {
     transform: rotateY(180deg);
     -webkit-transform: rotateY(180deg);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
   }
 }
 
@@ -799,7 +800,6 @@ header {
 .panel-card.flipped .flashcard {
   transform: rotateY(180deg) !important;
   -webkit-transform: rotateY(180deg) !important;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
 .panel-card .card-face {
@@ -819,11 +819,12 @@ header {
   justify-content: space-between;
   box-sizing: border-box;
   overflow: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 .panel-card .card-front {
-  transform: rotateY(0deg);
-  -webkit-transform: rotateY(0deg);
+  transform: rotateY(0deg) translateZ(1px);
+  -webkit-transform: rotateY(0deg) translateZ(1px);
 }
 
 .panel-card .card-front > * {
@@ -854,8 +855,8 @@ header {
 }
 
 .panel-card .card-back {
-  transform: rotateY(180deg);
-  -webkit-transform: rotateY(180deg);
+  transform: rotateY(180deg) translateZ(1px);
+  -webkit-transform: rotateY(180deg) translateZ(1px);
   background-color: var(--white);
   color: var(--dark);
   display: flex;
@@ -2119,6 +2120,16 @@ footer {
   
   .panel-card {
     height: 225px;
+  }
+  
+  .panel-card .flashcard {
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    -webkit-transition: -webkit-transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  .panel-card .card-front::after {
+    display: none !important;
   }
   
   .panel-card .card-face {

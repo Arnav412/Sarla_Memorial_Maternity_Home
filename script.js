@@ -52,11 +52,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const maxDate = new Date(minDate);
         maxDate.setMonth(maxDate.getMonth() + 2);
 
-        // State trackers
+        // State trackers (Default to minDate so preferred date is never empty)
         let activeMonth = minDate.getMonth();
         let activeYear = minDate.getFullYear();
-        let selectedDate = null;
+        let selectedDate = minDate;
         let pendingSelectedDate = null;
+
+        // Auto-set initial default date in hidden field and display text
+        ptDateHidden.value = formatDateYYYYMMDD(selectedDate);
+        const initialDateText = document.getElementById('ptDateText');
+        if (initialDateText) {
+            const options = { weekday: 'short', month: 'short', day: 'numeric' };
+            initialDateText.textContent = selectedDate.toLocaleDateString('en-US', options);
+            ptDateInput.style.color = 'var(--dark)';
+        }
 
         // Format dates helper
         function formatDateYYYYMMDD(date) {
@@ -281,113 +290,88 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         });
-    });
-
-    // 3. Dynamic Flashcards Toggle (for Aashnaa Oncology grid)
+    });    // 3. Dynamic Flashcards Toggle (Instant 0ms Touch Response)
     const flashcards = document.querySelectorAll('.panel-card');
     flashcards.forEach(card => {
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let isTouchTap = false;
+
+        card.addEventListener('touchstart', (e) => {
+            if (e.touches.length > 1) return;
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            isTouchTap = false;
+        }, { passive: true });
+
+        card.addEventListener('touchend', (e) => {
+            if (e.target.closest('a')) return;
+            if (!e.changedTouches || e.changedTouches.length === 0) return;
+            
+            const deltaX = Math.abs(e.changedTouches[0].clientX - touchStartX);
+            const deltaY = Math.abs(e.changedTouches[0].clientY - touchStartY);
+
+            // Trigger flip only if touch was a tap (finger moved < 10px, not a scroll swipe)
+            if (deltaX < 10 && deltaY < 10) {
+                isTouchTap = true;
+                requestAnimationFrame(() => {
+                    card.classList.toggle('flipped');
+                });
+            }
+        }, { passive: true });
+
         card.addEventListener('click', (e) => {
             if (e.target.closest('a')) return;
-            card.classList.toggle('flipped');
+            // Avoid duplicate toggle if touchend already handled the tap
+            if (isTouchTap) {
+                isTouchTap = false;
+                return;
+            }
+            requestAnimationFrame(() => {
+                card.classList.toggle('flipped');
+            });
         });
     });
 
-    // 4. Form Submission & Custom Notification (Formspree Integration)
+    // 4. Form Submission & Client-Side Validation (Native FormSubmit - 100% Mobile Bulletproof)
     const form = document.querySelector('.appointment-form');
     if (form) {
         form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            // Collect Form Values for validation
-            const name = document.getElementById('ptName').value;
-            const phone = document.getElementById('ptPhone').value;
-            const doc = document.getElementById('ptDoc').value;
-            const date = document.getElementById('ptDate').value;
-            const msg = document.getElementById('ptMessage').value;
-            
-            if (!name || !phone || !date) {
-                alert('Please fill out all required fields.');
+            const nameElem = document.getElementById('ptName');
+            const phoneElem = document.getElementById('ptPhone');
+            const dateElem = document.getElementById('ptDate');
+
+            const name = nameElem ? nameElem.value.trim() : '';
+            const phone = phoneElem ? phoneElem.value.trim() : '';
+            let date = dateElem ? dateElem.value.trim() : '';
+
+            if (!name) {
+                e.preventDefault();
+                alert('Please enter your Full Name.');
+                if (nameElem) nameElem.focus();
                 return;
             }
+
+            if (!phone || phone.length < 10) {
+                e.preventDefault();
+                alert('Please enter a valid 10-digit Mobile Phone Number.');
+                if (phoneElem) phoneElem.focus();
+                return;
+            }
+
+            // Ensure date is never empty
+            if (!date) {
+                const todayFormatted = new Date().toISOString().split('T')[0];
+                if (dateElem) dateElem.value = todayFormatted;
+            }
             
-            // Set Loading State
+            // Set Loading Feedback on Submit Button
             const submitBtn = form.querySelector('button[type="submit"]');
-            const originalBtnText = submitBtn.textContent;
-            submitBtn.textContent = 'Submitting Request...';
-            submitBtn.disabled = true;
-            submitBtn.style.opacity = '0.7';
-
-            // Submit via Fetch to Formspree
-            const formData = new FormData();
-            formData.append('_subject', 'New Patient Appointment Request - Sarla Memorial Maternity Home');
-            formData.append('_captcha', 'false');
-            formData.append('_template', 'table');
-            formData.append('Patient Name', name);
-            formData.append('Phone Number', phone);
-            formData.append('Requested Specialist', doc);
-            formData.append('Preferred Date', date);
-            formData.append('Special Notes', msg);
-
-            fetch('https://formsubmit.co/ajax/sarlamemorialmaternityhome@gmail.com', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            })
-            .then(response => {
-                submitBtn.textContent = originalBtnText;
-                submitBtn.disabled = false;
-                submitBtn.style.opacity = '';
-
-                if (response.ok) {
-                    // Create booking success toast notification
-                    const toast = document.createElement('div');
-                    toast.style.position = 'fixed';
-                    toast.style.bottom = '100px';
-                    toast.style.right = '30px';
-                    toast.style.backgroundColor = '#0f766e';
-                    toast.style.color = '#ffffff';
-                    toast.style.padding = '1rem 2rem';
-                    toast.style.borderRadius = '12px';
-                    toast.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1)';
-                    toast.style.zIndex = '10000';
-                    toast.style.fontFamily = 'Outfit, sans-serif';
-                    toast.style.transform = 'translateY(100px)';
-                    toast.style.opacity = '0';
-                    toast.style.transition = 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)';
-                    toast.innerHTML = `<strong>Booking Requested!</strong><br>Appointment requested with ${doc}. We will contact you soon at ${phone}.<br><span style="font-size:0.8rem;opacity:0.8;">Note: If this is the first submission, check your mail to verify the form.</span>`;
-                    
-                    document.body.appendChild(toast);
-                    
-                    // Trigger animation
-                    setTimeout(() => {
-                        toast.style.transform = 'translateY(0)';
-                        toast.style.opacity = '1';
-                    }, 100);
-                    
-                    // Reset form
-                    form.reset();
-                    
-                    // Remove Toast
-                    setTimeout(() => {
-                        toast.style.transform = 'translateY(100px)';
-                        toast.style.opacity = '0';
-                        setTimeout(() => {
-                            toast.remove();
-                        }, 500);
-                    }, 6000);
-                } else {
-                    alert('Submission failed. Please try again or call us directly.');
-                }
-            })
-            .catch(err => {
-                submitBtn.textContent = originalBtnText;
-                submitBtn.disabled = false;
-                submitBtn.style.opacity = '';
-                console.error('Error submitting form:', err);
-                alert('Submission failed due to a network error. Please call us directly.');
-            });
+            if (submitBtn) {
+                submitBtn.textContent = 'Submitting Request...';
+                submitBtn.style.opacity = '0.75';
+            }
+            // Form posts directly to FormSubmit endpoint with zero fetch hanging!
         });
     }
 
