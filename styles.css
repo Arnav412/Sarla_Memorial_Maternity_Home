@@ -598,7 +598,7 @@ header {
 
 .doctors-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
 }
 
@@ -767,6 +767,11 @@ header {
   position: relative;
   cursor: pointer;
   perspective: 1000px;
+  -webkit-perspective: 1000px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .panel-card .flashcard {
@@ -774,14 +779,26 @@ header {
   height: 100%;
   position: relative;
   transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
   transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+  -webkit-transition: -webkit-transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
 
-.panel-card:hover .flashcard,
+/* Hover flip applies only on devices with fine pointer (mouse/trackpad) */
+@media (hover: hover) and (pointer: fine) {
+  .panel-card:hover .flashcard {
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* Flipped class toggle (works on both mobile touch and desktop click) */
 .panel-card.flipped .flashcard {
-  transform: rotateY(180deg);
+  transform: rotateY(180deg) !important;
+  -webkit-transform: rotateY(180deg) !important;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
 }
 
@@ -793,6 +810,8 @@ header {
   height: 100%;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
   border-radius: 16px;
   padding: 1.25rem 1.5rem;
   display: flex;
@@ -804,6 +823,7 @@ header {
 
 .panel-card .card-front {
   transform: rotateY(0deg);
+  -webkit-transform: rotateY(0deg);
 }
 
 .panel-card .card-front > * {
@@ -835,6 +855,7 @@ header {
 
 .panel-card .card-back {
   transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
   background-color: var(--white);
   color: var(--dark);
   display: flex;
@@ -935,6 +956,75 @@ header {
 .card-white-red .card-badge { background-color: #C62828; color: #ffffff; }
 .card-white-red .card-flip-action { color: #C62828; }
 .card-white-red .card-back { border: 2px solid #C62828; background-color: #FFF5F5; }
+
+/* Card Purple: Gynaecology & Obstetrics (Royal Lavender) */
+.card-purple .card-front {
+  background: linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 100%);
+  border: 1px solid rgba(147, 51, 234, 0.2);
+}
+.card-purple .card-front::after {
+  background: radial-gradient(circle, #E9D5FF 0%, rgba(233, 213, 255, 0.5) 70%, transparent 100%);
+}
+.card-purple .card-front h4 { color: #1e293b; }
+.card-purple .card-qual { color: #64748b; }
+.card-purple .card-org { color: #7E22CE; font-weight: 600; }
+.card-purple .card-badge { background-color: #9333EA; color: #ffffff; }
+.card-purple .card-flip-action { color: #9333EA; }
+.card-purple .card-back { border: 2px solid #9333EA; background-color: #FAF5FF; }
+
+/* General OPD Wide Static Card (Non-flipping) */
+.general-opd-static-card {
+  background: linear-gradient(135deg, #F0FDF9 0%, #E0F2FE 100%);
+  border: 1px solid rgba(2, 132, 199, 0.25);
+  border-radius: 16px;
+  padding: 2rem 2.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.general-opd-static-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(2, 132, 199, 0.12);
+  border-color: rgba(2, 132, 199, 0.4);
+}
+
+.general-opd-static-card .card-badge {
+  display: inline-block;
+  background-color: #0284c7;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.3rem 0.8rem;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.25rem;
+}
+
+.general-opd-static-card h4 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+}
+
+.general-opd-static-card .card-qual {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #0284c7;
+  margin-bottom: 1rem;
+}
+
+.general-opd-static-card .card-desc-body {
+  border-top: 1px solid rgba(2, 132, 199, 0.15);
+  padding-top: 1.25rem;
+  margin-top: 0.75rem;
+  font-size: 0.95rem;
+  color: #475569;
+  line-height: 1.65;
+}
 
 /* ENT Section Redesign Styles (Matching Reference Image 3) */
 .ent-section-container {
@@ -2024,10 +2114,57 @@ footer {
   
   .interactive-grid {
     grid-template-columns: 1fr;
+    gap: 1.25rem;
   }
   
   .panel-card {
-    height: 200px;
+    height: 225px;
+  }
+  
+  .panel-card .card-face {
+    padding: 1.15rem 1.25rem;
+  }
+
+  .panel-card h4 {
+    font-size: 1.15rem;
+  }
+
+  .panel-card .card-qual {
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .panel-card .card-org {
+    font-size: 0.8rem;
+  }
+
+  .panel-card .card-face.card-back h5 {
+    font-size: 1rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .panel-card .card-face.card-back .card-back-text {
+    font-size: 0.8rem;
+    line-height: 1.35;
+  }
+
+  .general-opd-static-card {
+    padding: 1.5rem 1.25rem;
+    border-radius: 14px;
+  }
+
+  .general-opd-static-card h4 {
+    font-size: 1.35rem;
+  }
+
+  .general-opd-static-card .card-qual {
+    font-size: 0.875rem;
+  }
+
+  .general-opd-static-card .card-desc-body {
+    font-size: 0.875rem;
+    padding-top: 1rem;
+    line-height: 1.55;
   }
   
   .ent-doctor-card {
@@ -2064,6 +2201,18 @@ footer {
 @media (max-width: 480px) {
   .container {
     padding: 0 1rem;
+  }
+
+  .panel-card {
+    height: 235px;
+  }
+  
+  .panel-card .card-face {
+    padding: 1rem 1rem;
+  }
+
+  .general-opd-static-card {
+    padding: 1.25rem 1rem;
   }
 
   .contact {

@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const flashcards = document.querySelectorAll('.panel-card');
     flashcards.forEach(card => {
         card.addEventListener('click', (e) => {
-            if (e.target.tagName.toLowerCase() === 'a') return;
+            if (e.target.closest('a')) return;
             card.classList.toggle('flipped');
         });
     });
@@ -319,13 +319,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Submit via Fetch to Formspree
             const formData = new FormData();
+            formData.append('_subject', 'New Patient Appointment Request - Sarla Memorial Maternity Home');
+            formData.append('_captcha', 'false');
+            formData.append('_template', 'table');
             formData.append('Patient Name', name);
             formData.append('Phone Number', phone);
             formData.append('Requested Specialist', doc);
             formData.append('Preferred Date', date);
             formData.append('Special Notes', msg);
 
-            fetch('https://formsubmit.co/ajax/sarlamemorialmaternityhome99@gmail.com', {
+            fetch('https://formsubmit.co/ajax/sarlamemorialmaternityhome@gmail.com', {
                 method: 'POST',
                 body: formData,
                 headers: {
