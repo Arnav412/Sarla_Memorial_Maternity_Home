@@ -769,29 +769,27 @@ header {
 
 /* Panel Card Flipping Architecture */
 .panel-card {
-  height: 240px;
-  position: relative;
-  cursor: pointer;
-  perspective: 1000px;
-  -webkit-perspective: 1000px;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  user-select: none;
-  -webkit-user-select: none;
-  will-change: transform;
+    height: 240px;
+    position: relative;
+    cursor: pointer;
+    perspective: 1000px;
+    -webkit-perspective: 1000px;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 .panel-card .flashcard {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  transform-style: preserve-3d;
-  -webkit-transform-style: preserve-3d;
-  transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
-  -webkit-transition: -webkit-transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
-  border-radius: 16px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
-  will-change: transform;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+    -webkit-transition: -webkit-transform 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+    border-radius: 16px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
 }
 
 /* Hover flip applies only on devices with fine pointer (mouse/trackpad) */
@@ -810,6 +808,7 @@ header {
 
 .panel-card .card-face {
   position: absolute;
+  pointer-events: none;
   top: 0;
   left: 0;
   width: 100%;
@@ -1430,21 +1429,29 @@ header {
 
 /* Material Design Date Picker Modal Dialog styling */
 .material-datepicker-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(15, 23, 42, 0.6); /* Slate backdrop with transparency */
-  backdrop-filter: blur(4px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10000;
-  user-select: none;
-  animation: fadeIn 0.2s ease-out;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    user-select: none;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
 }
-
+.material-datepicker-modal.active {
+    display: flex;
+    pointer-events: auto;
+    opacity: 1;
+    visibility: visible;
+}
 .material-datepicker-content {
   width: 328px;
   max-width: 92vw;
@@ -1836,6 +1843,7 @@ footer {
   flex-direction: column-reverse;
   align-items: flex-start;
   gap: 12px;
+  pointer-events: none;
 }
 
 /* Pulse trigger button */
@@ -1854,6 +1862,7 @@ footer {
   border: none;
   position: relative;
   transition: var(--transition-normal);
+  pointer-events: auto;
 }
 
 .floating-trigger::after {

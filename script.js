@@ -1,14 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 0a. Name and Phone Validation Constraints
-    const ptName = document.getElementById('ptName');
+    // 0a. Phone Validation Constraints
     const ptPhone = document.getElementById('ptPhone');
-
-    if (ptName) {
-        ptName.addEventListener('input', (e) => {
-            // Keep only alphabet characters and spaces
-            e.target.value = e.target.value.replace(/[^A-Za-z\s]/g, '');
-        });
-    }
 
     if (ptPhone) {
         ptPhone.addEventListener('input', (e) => {
@@ -165,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Open Modal
         ptDateInput.addEventListener('click', (e) => {
             e.stopPropagation();
-            datePickerModal.style.display = 'flex';
+            datePickerModal.classList.add('active');
             
             pendingSelectedDate = selectedDate;
             const targetDate = selectedDate || minDate;
@@ -210,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Cancel Selection
         datepickerCancelBtn.addEventListener('click', (e) => {
             e.stopPropagation();
-            datePickerModal.style.display = 'none';
+            datePickerModal.classList.remove('active');
             pendingSelectedDate = null;
         });
 
@@ -229,13 +221,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 ptDateInput.style.color = 'var(--dark)';
             }
 
-            datePickerModal.style.display = 'none';
+            datePickerModal.classList.remove('active');
         });
 
         // Close when clicking modal backdrop
         datePickerModal.addEventListener('click', (e) => {
             if (e.target === datePickerModal) {
-                datePickerModal.style.display = 'none';
+                datePickerModal.classList.remove('active');
                 pendingSelectedDate = null;
             }
         });
@@ -292,74 +284,101 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });    // 3. Dynamic Flashcards Toggle (Clean Touch & Click Handler - Zero Lag)
     const flashcards = document.querySelectorAll('.panel-card');
+
     flashcards.forEach(card => {
-        let touchHandled = false;
-
-        card.addEventListener('touchend', (e) => {
-            if (e.target.closest('a')) return;
-            touchHandled = true;
-            card.classList.toggle('flipped');
-            setTimeout(() => { touchHandled = false; }, 400);
-        });
-
         card.addEventListener('click', (e) => {
             if (e.target.closest('a')) return;
-            if (touchHandled) return;
             card.classList.toggle('flipped');
         });
     });
 
     // 4. Form Submission & Client-Side Validation (Native FormSubmit with Success Modal)
-    const form = document.querySelector('.appointment-form');
-    const successModal = document.getElementById('appointmentSuccessModal');
-    const closeSuccessBtn = document.getElementById('closeSuccessModalBtn');
+    // 4. Form Submission & Client-Side Validation
+const form = document.querySelector('.appointment-form');
+const successModal = document.getElementById('appointmentSuccessModal');
+const closeSuccessBtn = document.getElementById('closeSuccessModalBtn');
 
-    if (closeSuccessBtn && successModal) {
-        closeSuccessBtn.addEventListener('click', () => {
+if (closeSuccessBtn && successModal) {
+    closeSuccessBtn.addEventListener('click', () => {
+        successModal.style.display = 'none';
+    });
+
+    successModal.addEventListener('click', (e) => {
+        if (e.target === successModal) {
             successModal.style.display = 'none';
-        });
-        successModal.addEventListener('click', (e) => {
-            if (e.target === successModal) {
-                successModal.style.display = 'none';
+        }
+    });
+}
+
+if (form) {
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const nameElem = document.getElementById('ptName');
+        const phoneElem = document.getElementById('ptPhone');
+        const docElem = document.getElementById('ptDoc');
+        const dateElem = document.getElementById('ptDate');
+        const ptDateText = document.getElementById('ptDateText');
+
+        const name = nameElem ? nameElem.value.trim() : '';
+        const phone = phoneElem ? phoneElem.value.trim() : '';
+        const doc = docElem ? docElem.value : '';
+        let dateVal = dateElem ? dateElem.value.trim() : '';
+
+        if (!name) {
+            alert('Please enter your Full Name.');
+            if (nameElem) nameElem.focus();
+            return;
+        }
+
+        if (!phone || phone.length !== 10) {
+            alert('Please enter a valid 10-digit Mobile Phone Number.');
+            if (phoneElem) phoneElem.focus();
+            return;
+        }
+
+        if (!dateVal) {
+            const today = new Date();
+            dateVal =
+                today.getFullYear() + '-' +
+                String(today.getMonth() + 1).padStart(2, '0') + '-' +
+                String(today.getDate()).padStart(2, '0');
+
+            if (dateElem) {
+                dateElem.value = dateVal;
             }
-        });
-    }
+        }
 
-    if (form) {
-        form.addEventListener('submit', (e) => {
-            const nameElem = document.getElementById('ptName');
-            const phoneElem = document.getElementById('ptPhone');
-            const docElem = document.getElementById('ptDoc');
-            const dateElem = document.getElementById('ptDate');
-            const ptDateText = document.getElementById('ptDateText');
+        const submitBtn = form.querySelector('button[type="submit"]');
 
-            const name = nameElem ? nameElem.value.trim() : '';
-            const phone = phoneElem ? phoneElem.value.trim() : '';
-            const doc = docElem ? docElem.value : '';
-            let dateVal = dateElem ? dateElem.value.trim() : '';
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            submitBtn.style.opacity = '0.7';
+        }
 
-            if (!name) {
-                e.preventDefault();
-                alert('Please enter your Full Name.');
-                if (nameElem) nameElem.focus();
-                return;
+        try {
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            const response = await fetch(
+                'https://formsubmit.co/ajax/sarlamemorialmaternityhome@gmail.com',
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                }
+            );
+
+            const result = await response.json();
+
+            if (!response.ok || result.success === false) {
+                throw new Error('Form submission failed');
             }
 
-            if (!phone || phone.length < 10) {
-                e.preventDefault();
-                alert('Please enter a valid 10-digit Mobile Phone Number.');
-                if (phoneElem) phoneElem.focus();
-                return;
-            }
-
-            // Ensure date is never empty
-            if (!dateVal) {
-                const todayFormatted = new Date().toISOString().split('T')[0];
-                dateVal = todayFormatted;
-                if (dateElem) dateElem.value = todayFormatted;
-            }
-
-            // Populate Success Modal details
             const succName = document.getElementById('succName');
             const succPhone = document.getElementById('succPhone');
             const succDoc = document.getElementById('succDoc');
@@ -368,28 +387,35 @@ document.addEventListener('DOMContentLoaded', () => {
             if (succName) succName.textContent = name;
             if (succPhone) succPhone.textContent = phone;
             if (succDoc) succDoc.textContent = doc;
-            if (succDate) succDate.textContent = ptDateText ? ptDateText.textContent : dateVal;
+            if (succDate) {
+                succDate.textContent = ptDateText
+                    ? ptDateText.textContent
+                    : dateVal;
+            }
 
-            // Display Success Modal immediately (Instant feedback for patient)
             if (successModal) {
                 successModal.style.display = 'flex';
             }
 
-            // Set Loading Feedback on Submit Button with auto-reset safety
-            const submitBtn = form.querySelector('button[type="submit"]');
-            if (submitBtn) {
-                const origText = submitBtn.textContent;
-                submitBtn.textContent = 'Submitting Request...';
-                submitBtn.style.opacity = '0.75';
-                setTimeout(() => {
-                    submitBtn.textContent = origText;
-                    submitBtn.style.opacity = '1';
-                }, 3000);
-            }
+            form.reset();
 
-            // Form submits via iframe target without page redirection or mobile hanging!
-        });
-    }
+        } catch (error) {
+            console.error('Appointment submission error:', error);
+
+            alert(
+                'Unable to submit the appointment request. ' +
+                'Please try again or call us directly.'
+            );
+
+        } finally {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Submit Appointment Request';
+                submitBtn.style.opacity = '1';
+            }
+        }
+    });
+}
 
     // 5. Mobile Navigation Menu Toggle
     const mobileBtn = document.querySelector('.mobile-menu-btn');
